@@ -1,9 +1,9 @@
 
 CPP=g++-5
-CPPFLAGS= -Ofast -flto -std=c++11 -march=native -fpermissive
+CPPFLAGS= -O2 -flto -std=c++11 -march=native -fpermissive
 
 CC=gcc-5
-CFLAGS=-g -Ofast -flto -march=native 
+CFLAGS=-g -O2 -flto -march=native 
 
 LDLIBS= -lssl -lcrypto -lpthread  -L/usr/local/cuda-8.0/lib64/ -lOpenCL
 LDFLAGS= -flto
