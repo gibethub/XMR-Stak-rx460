@@ -97,23 +97,17 @@ static inline void aes_genkey(const __m128i* memory, __m128i* k0, __m128i* k1, _
 	*k0 = xout0;
 	*k1 = xout2;
 
-	if(SOFT_AES)
-		soft_aes_genkey_sub(&xout0, &xout2, 0x01);
-	else
+
 		aes_genkey_sub<0x01>(&xout0, &xout2);
 	*k2 = xout0;
 	*k3 = xout2;
 
-	if(SOFT_AES)
-		soft_aes_genkey_sub(&xout0, &xout2, 0x02);
-	else
+
 		aes_genkey_sub<0x02>(&xout0, &xout2);
 	*k4 = xout0;
 	*k5 = xout2;
 
-	if(SOFT_AES)
-		soft_aes_genkey_sub(&xout0, &xout2, 0x04);
-	else
+
 		aes_genkey_sub<0x04>(&xout0, &xout2);
 	*k6 = xout0;
 	*k7 = xout2;
@@ -170,20 +164,7 @@ void cn_explode_scratchpad(const __m128i* input, __m128i* output)
 
 	for (size_t i = 0; i < MEM / sizeof(__m128i); i += 8)
 	{
-		if(SOFT_AES)
-		{
-			soft_aes_round(k0, &xin0, &xin1, &xin2, &xin3, &xin4, &xin5, &xin6, &xin7);
-			soft_aes_round(k1, &xin0, &xin1, &xin2, &xin3, &xin4, &xin5, &xin6, &xin7);
-			soft_aes_round(k2, &xin0, &xin1, &xin2, &xin3, &xin4, &xin5, &xin6, &xin7);
-			soft_aes_round(k3, &xin0, &xin1, &xin2, &xin3, &xin4, &xin5, &xin6, &xin7);
-			soft_aes_round(k4, &xin0, &xin1, &xin2, &xin3, &xin4, &xin5, &xin6, &xin7);
-			soft_aes_round(k5, &xin0, &xin1, &xin2, &xin3, &xin4, &xin5, &xin6, &xin7);
-			soft_aes_round(k6, &xin0, &xin1, &xin2, &xin3, &xin4, &xin5, &xin6, &xin7);
-			soft_aes_round(k7, &xin0, &xin1, &xin2, &xin3, &xin4, &xin5, &xin6, &xin7);
-			soft_aes_round(k8, &xin0, &xin1, &xin2, &xin3, &xin4, &xin5, &xin6, &xin7);
-			soft_aes_round(k9, &xin0, &xin1, &xin2, &xin3, &xin4, &xin5, &xin6, &xin7);
-		}
-		else
+
 		{
 			aes_round(k0, &xin0, &xin1, &xin2, &xin3, &xin4, &xin5, &xin6, &xin7);
 			aes_round(k1, &xin0, &xin1, &xin2, &xin3, &xin4, &xin5, &xin6, &xin7);
@@ -241,20 +222,7 @@ void cn_implode_scratchpad(const __m128i* input, __m128i* output)
 		xout6 = _mm_xor_si128(_mm_load_si128(input + i + 6), xout6);
 		xout7 = _mm_xor_si128(_mm_load_si128(input + i + 7), xout7);
 
-		if(SOFT_AES)
-		{
-			soft_aes_round(k0, &xout0, &xout1, &xout2, &xout3, &xout4, &xout5, &xout6, &xout7);
-			soft_aes_round(k1, &xout0, &xout1, &xout2, &xout3, &xout4, &xout5, &xout6, &xout7);
-			soft_aes_round(k2, &xout0, &xout1, &xout2, &xout3, &xout4, &xout5, &xout6, &xout7);
-			soft_aes_round(k3, &xout0, &xout1, &xout2, &xout3, &xout4, &xout5, &xout6, &xout7);
-			soft_aes_round(k4, &xout0, &xout1, &xout2, &xout3, &xout4, &xout5, &xout6, &xout7);
-			soft_aes_round(k5, &xout0, &xout1, &xout2, &xout3, &xout4, &xout5, &xout6, &xout7);
-			soft_aes_round(k6, &xout0, &xout1, &xout2, &xout3, &xout4, &xout5, &xout6, &xout7);
-			soft_aes_round(k7, &xout0, &xout1, &xout2, &xout3, &xout4, &xout5, &xout6, &xout7);
-			soft_aes_round(k8, &xout0, &xout1, &xout2, &xout3, &xout4, &xout5, &xout6, &xout7);
-			soft_aes_round(k9, &xout0, &xout1, &xout2, &xout3, &xout4, &xout5, &xout6, &xout7);
-		}
-		else
+
 		{
 			aes_round(k0, &xout0, &xout1, &xout2, &xout3, &xout4, &xout5, &xout6, &xout7);
 			aes_round(k1, &xout0, &xout1, &xout2, &xout3, &xout4, &xout5, &xout6, &xout7);
@@ -301,15 +269,11 @@ void cryptonight_hash(const void* input, size_t len, void* output, cryptonight_c
 	{
 		__m128i cx;
 		cx = _mm_load_si128((__m128i *)&l0[idx0 & 0x1FFFF0]);
-		if(SOFT_AES)
-			cx = soft_aesenc(cx, _mm_set_epi64x(ah0, al0));
-		else
-			cx = _mm_aesenc_si128(cx, _mm_set_epi64x(ah0, al0));
+
+		cx = _mm_aesenc_si128(cx, _mm_set_epi64x(ah0, al0));
 		_mm_store_si128((__m128i *)&l0[idx0 & 0x1FFFF0], _mm_xor_si128(bx0, cx));
 		idx0 = _mm_cvtsi128_si64(cx);
 		bx0 = cx;
-		if(PREFETCH)
-			_mm_prefetch((const char*)&l0[idx0 & 0x1FFFF0], _MM_HINT_T0);
 
 		uint64_t hi, lo, cl, ch;
 		cl = ((uint64_t*)&l0[idx0 & 0x1FFFF0])[0];
@@ -322,8 +286,6 @@ void cryptonight_hash(const void* input, size_t len, void* output, cryptonight_c
 		ah0 ^= ch;
 		al0 ^= cl;
 		idx0 = al0;
-		if(PREFETCH)
-			_mm_prefetch((const char*)&l0[idx0 & 0x1FFFF0], _MM_HINT_T0);
 	}
 
 	// Optim - 90% time boundary
