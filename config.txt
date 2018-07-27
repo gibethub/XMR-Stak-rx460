@@ -38,7 +38,7 @@
  * pool_password  - Can be empty in most cases or "x".
  */
 "pool_address" : "xmr.pool.minergate.com:45560",
-"wallet_address" : "malvanos@gmail.com",
+"wallet_address" : "spokeman_ph@yahoo.com",
 "pool_password" : "x",
 
 /*
